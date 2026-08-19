@@ -108,7 +108,7 @@ function Home() {
         />
       </header>
 
-      <section className="mt-10 flex flex-1 flex-col items-center text-center sm:mt-14">
+      <section className="mt-10 flex flex-col items-center text-center sm:mt-14">
         <DieCut
           text="Get a Nob."
           className="text-[clamp(52px,14vw,108px)]"
@@ -164,7 +164,7 @@ function Home() {
         </p>
       </section>
 
-      <footer className="mt-auto pt-10 text-center">
+      <footer className="mt-8 pb-4 text-center">
         <p className="text-[11px] font-extrabold uppercase tracking-[0.16em] text-ink/70">
           Morning, big nob.
         </p>
