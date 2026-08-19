@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      html, body { margin: 0; width: 1200px; height: 630px; overflow: hidden; }
+      body {
+        width: 1200px;
+        height: 630px;
+        background: #fddb2d;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 36px;
+        font-family: "DynaPuff", system-ui, sans-serif;
+      }
+      .copy { transform: rotate(-2.4deg); margin-top: -12px; }
+      .line {
+        position: relative;
+        display: block;
+        font-size: 118px;
+        font-weight: 700;
+        line-height: 0.78;
+        letter-spacing: 0.008em;
+        color: #17110b;
+        margin: 0;
+      }
+      .line .plate {
+        position: absolute;
+        inset: 0;
+        color: #fffbed;
+        -webkit-text-stroke: 0.22em #fffbed;
+        paint-order: stroke fill;
+        filter: drop-shadow(10px 12px 0 #17110b);
+      }
+      .line .ink { position: relative; }
+      .lede {
+        margin-top: 28px;
+        font-size: 22px;
+        letter-spacing: 0.04em;
+        color: #17110b;
+        font-weight: 700;
+      }
+      img {
+        height: 430px;
+        width: auto;
+        display: block;
+      }
+      .grain {
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        opacity: 0.2;
+        mix-blend-mode: multiply;
+        background-image: radial-gradient(#17110b 0.7px, transparent 0.8px);
+        background-size: 11px 11px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grain"></div>
+    <div class="copy">
+      <p class="line"><span class="plate">Get a</span><span class="ink">Get a</span></p>
+      <p class="line" style="margin-top: 8px"><span class="plate">Nob.</span><span class="ink">Nob.</span></p>
+      <p class="lede">A doorman for your face.</p>
+    </div>
+    <img src="../public/nob-master.jpg" alt="" />
+  </body>
+</html>
