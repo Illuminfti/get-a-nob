@@ -22,8 +22,9 @@ function Login() {
     try {
       await signIn("grok-x", { callbackURL: "/", errorCallbackURL: "/login" });
     } catch (err) {
-      setBusy(false);
       setError(err instanceof Error ? err.message : "The door jammed.");
+    } finally {
+      setBusy(false);
     }
   }
 
@@ -35,9 +36,7 @@ function Login() {
         Nob needs a face to judge. X is the door.
       </p>
       <div className="mt-10 w-full max-w-sm">
-        {isPending ? (
-          <div className="plate h-12 w-full bg-blue/40" aria-hidden="true" />
-        ) : authEnabled ? (
+        {authEnabled ? (
           <PlateButton onClick={() => void connect()} disabled={busy}>
             {busy ? "Opening the door." : "Connect to Twitter"}
           </PlateButton>

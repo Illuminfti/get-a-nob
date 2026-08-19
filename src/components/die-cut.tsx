@@ -8,7 +8,10 @@ export function DieCut({
   className?: string;
 }) {
   return (
-    <Tag className={`die-cut ${className}`}>
+    <Tag
+      className={`die-cut ${className}`}
+      style={{ fontFamily: '"DynaPuff", ui-rounded, system-ui, sans-serif' }}
+    >
       <span className="die-cut-plate" aria-hidden="true">
         {text}
       </span>

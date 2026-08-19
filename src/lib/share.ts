@@ -1,5 +1,6 @@
-export async function dataUrlToFile(dataUrl: string, name: string): Promise<File> {
-  const res = await fetch(dataUrl);
+export async function dataUrlToFile(src: string, name: string): Promise<File> {
+  const res = await fetch(src);
+  if (!res.ok) throw new Error("Could not read the file.");
   const blob = await res.blob();
   const type = blob.type || "image/jpeg";
   const filename = type.includes("png") ? name.replace(/\.jpe?g$/i, ".png") : name;
@@ -17,8 +18,8 @@ export function downloadFile(file: File) {
   window.setTimeout(() => URL.revokeObjectURL(url), 1500);
 }
 
-export async function shareNob(dataUrl: string): Promise<"shared" | "tweeted"> {
-  const file = await dataUrlToFile(dataUrl, "nob-pfp.jpg");
+export async function shareNob(src: string): Promise<"shared" | "tweeted"> {
+  const file = await dataUrlToFile(src, "nob-pfp.jpg");
   const payload = {
     title: "Get a Nob",
     text: "I got a Nob. A tiny, judgmental doorman for my face.",
@@ -29,14 +30,15 @@ export async function shareNob(dataUrl: string): Promise<"shared" | "tweeted"> {
     return "shared";
   }
   downloadFile(file);
-  const tweet = "https://twitter.com/intent/tweet?text=" +
+  const tweet =
+    "https://twitter.com/intent/tweet?text=" +
     encodeURIComponent("I got a Nob. A tiny, judgmental doorman for my face.");
   window.open(tweet, "_blank", "noopener,noreferrer");
   return "tweeted";
 }
 
-export async function changeTwitterPfp(dataUrl: string): Promise<void> {
-  const file = await dataUrlToFile(dataUrl, "nob-pfp.jpg");
+export async function changeTwitterPfp(src: string): Promise<void> {
+  const file = await dataUrlToFile(src, "nob-pfp.jpg");
   downloadFile(file);
   window.open("https://x.com/settings/profile", "_blank", "noopener,noreferrer");
 }

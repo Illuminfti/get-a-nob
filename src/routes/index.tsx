@@ -3,11 +3,28 @@ import { useEffect, useState } from "react";
 import { authEnabled, signIn, signOut } from "@/lib/auth/client";
 import { useCurrentUserState } from "@/lib/auth/use-current-user";
 import { DieCut } from "@/components/die-cut";
+import { NobFace } from "@/components/nob-face";
 import { PlateButton } from "@/components/plate-button";
 import { generateNobPfp, getLatestPfp } from "@/lib/pfp";
 import { changeTwitterPfp, shareNob } from "@/lib/share";
 
 export const Route = createFileRoute("/")({ component: Home });
+
+function withTimeout<T>(promise: Promise<T>, ms: number, message: string): Promise<T> {
+  return new Promise((resolve, reject) => {
+    const timer = window.setTimeout(() => reject(new Error(message)), ms);
+    promise.then(
+      (value) => {
+        window.clearTimeout(timer);
+        resolve(value);
+      },
+      (err) => {
+        window.clearTimeout(timer);
+        reject(err);
+      },
+    );
+  });
+}
 
 function Home() {
   const { user, isPending } = useCurrentUserState();
@@ -15,13 +32,12 @@ function Home() {
   const [sourceUrl, setSourceUrl] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const [status, setStatus] = useState<string | null>(null);
-  const [loadedExisting, setLoadedExisting] = useState(false);
+  const [statusBad, setStatusBad] = useState(false);
 
   useEffect(() => {
     if (!user) {
       setNobImage(null);
       setSourceUrl(null);
-      setLoadedExisting(false);
       return;
     }
     let cancelled = false;
@@ -31,10 +47,7 @@ function Home() {
         setNobImage(row.imageData);
         setSourceUrl(row.sourceUrl);
       })
-      .catch(() => undefined)
-      .finally(() => {
-        if (!cancelled) setLoadedExisting(true);
-      });
+      .catch(() => undefined);
     return () => {
       cancelled = true;
     };
@@ -42,29 +55,45 @@ function Home() {
 
   async function connect() {
     setStatus(null);
+    setStatusBad(false);
     setBusy(true);
     try {
       await signIn("grok-x", { callbackURL: "/", errorCallbackURL: "/" });
     } catch (err) {
-      setBusy(false);
+      setStatusBad(true);
       setStatus(err instanceof Error ? err.message : "The door jammed.");
+    } finally {
+      setBusy(false);
     }
   }
 
   async function generate() {
-    setStatus(null);
+    const photoUrl = user?.profileImageUrl ?? null;
+    if (!photoUrl) {
+      setStatusBad(true);
+      setStatus("Nob needs a face. Put a photo on X first.");
+      return;
+    }
+    setStatus("Nob is looking.");
+    setStatusBad(false);
     setBusy(true);
     try {
-      const result = await generateNobPfp();
+      const result = await withTimeout(
+        generateNobPfp({ data: { photoUrl } }),
+        55_000,
+        "Nob took too long.",
+      );
       if (result.ok) {
         setNobImage(result.imageData);
         setSourceUrl(result.sourceUrl);
         setStatus("Approved. Take it to X.");
       } else {
+        setStatusBad(true);
         setStatus(result.error);
       }
     } catch (err) {
       const message = err instanceof Error ? err.message : "The door jammed.";
+      setStatusBad(true);
       setStatus(message === "Unauthorized" ? "Connect to Twitter first." : message);
     } finally {
       setBusy(false);
@@ -95,24 +124,19 @@ function Home() {
 
   const faceUrl = sourceUrl ?? user?.profileImageUrl ?? null;
   const showResult = Boolean(nobImage);
+  const signedIn = Boolean(user);
 
   return (
-    <main className="relative mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-5 pb-28 pt-6 sm:px-8">
+    <main className="relative z-10 mx-auto flex min-h-dvh w-full max-w-2xl flex-col px-5 pb-28 pt-6 sm:px-8">
       <header className="flex items-start justify-between gap-4">
         <p className="wordmark text-ink" aria-label="nob">
           nob
         </p>
-        <AuthChip
-          isPending={isPending}
-          name={user?.displayName ?? null}
-        />
+        <AuthChip isPending={isPending} name={user?.displayName ?? null} />
       </header>
 
       <section className="mt-10 flex flex-col items-center text-center sm:mt-14">
-        <DieCut
-          text="Get a Nob."
-          className="text-[clamp(52px,14vw,108px)]"
-        />
+        <DieCut text="Get a Nob." className="text-[clamp(52px,14vw,108px)]" />
         <p className="mt-7 max-w-[26ch] text-pretty text-lg font-semibold leading-snug sm:text-xl">
           A tiny, judgmental doorman for your face.
         </p>
@@ -121,15 +145,12 @@ function Home() {
           <PortraitStage
             faceUrl={faceUrl}
             nobImage={nobImage}
-            busy={busy && Boolean(user)}
-            pending={isPending}
+            busy={busy && signedIn}
           />
         </div>
 
         <div className="mt-10 flex w-full max-w-sm flex-col gap-3">
-          {isPending ? (
-            <div className="plate h-12 w-full bg-blue/35" aria-hidden="true" />
-          ) : !user ? (
+          {!signedIn ? (
             authEnabled ? (
               <PlateButton onClick={() => void connect()} disabled={busy}>
                 {busy ? "Opening the door." : "Connect to Twitter"}
@@ -138,7 +159,7 @@ function Home() {
               <p className="text-sm font-semibold">Sign-in is closed.</p>
             )
           ) : !showResult ? (
-            <PlateButton onClick={() => void generate()} disabled={busy || !loadedExisting}>
+            <PlateButton onClick={() => void generate()} disabled={busy}>
               {busy ? "Working the door." : "Generate"}
             </PlateButton>
           ) : (
@@ -157,10 +178,15 @@ function Home() {
         </div>
 
         <p
-          className="mt-5 min-h-6 max-w-[34ch] text-pretty text-sm font-bold leading-snug"
+          className={`mt-5 min-h-6 max-w-[34ch] text-pretty text-sm font-bold leading-snug ${statusBad ? "text-signal-red" : "text-ink"}`}
           role="status"
         >
-          {status ?? (user && !faceUrl ? "Nob needs a face. Put a photo on X first." : "\u00a0")}
+          {status ??
+            (signedIn && !faceUrl
+              ? "Nob needs a face. Put a photo on X first."
+              : !signedIn
+                ? "Press Nob. Then open the door."
+                : "\u00a0")}
         </p>
       </section>
 
@@ -204,24 +230,16 @@ function PortraitStage({
   faceUrl,
   nobImage,
   busy,
-  pending,
 }: {
   faceUrl: string | null;
   nobImage: string | null;
   busy: boolean;
-  pending: boolean;
 }) {
-  if (pending) {
-    return (
-      <div className="mx-auto aspect-square w-[min(100%,320px)] bg-cream/80" aria-hidden="true" />
-    );
-  }
-
   if (nobImage) {
     return (
       <div className="mx-auto flex w-full max-w-md items-center justify-center gap-3 sm:gap-5">
-        <FacePlate src={faceUrl ?? "/nob-master.jpg"} alt="Your current face" small />
-        <Arrow />
+        {faceUrl ? <FacePlate src={faceUrl} alt="Your current face" small /> : null}
+        {faceUrl ? <Arrow /> : null}
         <div className="relative">
           <FacePlate src={nobImage} alt="Your Nob" />
           {busy ? <WorkingStamp /> : <ApprovedStamp />}
@@ -232,12 +250,7 @@ function PortraitStage({
 
   return (
     <div className="relative mx-auto w-[min(100%,320px)]">
-      <img
-        src="/nob-master.jpg"
-        alt="Nob, a bald orange doorman with heavy brows and half-lidded eyes, watching the door."
-        className="mx-auto block h-auto w-full select-none"
-        draggable={false}
-      />
+      <NobFace busy={busy} />
       {busy ? <WorkingStamp /> : null}
     </div>
   );

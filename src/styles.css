@@ -1,5 +1,50 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "DynaPuff";
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url("/fonts/dynapuff-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "DynaPuff";
+  font-style: normal;
+  font-weight: 700;
+  font-display: block;
+  src: url("/fonts/dynapuff-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 600;
+  font-display: block;
+  src: url("/fonts/bricolage-latin-600.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 800;
+  font-display: block;
+  src: url("/fonts/bricolage-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Bricolage Grotesque";
+  font-style: normal;
+  font-weight: 800;
+  font-display: block;
+  src: url("/fonts/bricolage-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
 @theme {
   --color-ink: #17110b;
   --color-paper: #fffbed;
@@ -20,7 +65,7 @@
   --color-signal-amber: #a06d00;
   --color-hero-band: #d8ac0d;
 
-  --font-display: "DynaPuff", system-ui, sans-serif;
+  --font-display: "DynaPuff", ui-rounded, system-ui, sans-serif;
   --font-sans: "Bricolage Grotesque", system-ui, sans-serif;
 
   --shadow-hard: 10px 12px 0 #17110b;
@@ -34,12 +79,14 @@
     -moz-osx-font-smoothing: grayscale;
     background: #fddb2d;
     color: #17110b;
+    font-synthesis: none;
   }
 
   body {
     margin: 0;
     min-height: 100dvh;
-    font-family: var(--font-sans);
+    font-family: "Bricolage Grotesque", system-ui, sans-serif;
+    font-weight: 600;
     background: #fddb2d;
     color: #17110b;
   }
@@ -59,14 +106,13 @@
   }
 }
 
-/* Page skin: 11px ink dot screen. Texture lives on the page, not per-element. */
 .page-grain::before {
   content: "";
   pointer-events: none;
   position: fixed;
   inset: 0;
-  z-index: 40;
-  opacity: 0.22;
+  z-index: 0;
+  opacity: 0.18;
   mix-blend-mode: multiply;
   background-image: radial-gradient(#17110b 0.55px, transparent 0.65px);
   background-size: 11px 11px;
@@ -75,8 +121,9 @@
 .die-cut {
   position: relative;
   display: inline-block;
-  font-family: var(--font-display);
+  font-family: "DynaPuff", ui-rounded, system-ui, sans-serif;
   font-weight: 700;
+  font-synthesis: none;
   line-height: 0.78;
   letter-spacing: 0.008em;
   color: #17110b;
@@ -92,15 +139,20 @@
   paint-order: stroke fill;
   filter: drop-shadow(10px 12px 0 #17110b);
   user-select: none;
+  font-family: "DynaPuff", ui-rounded, system-ui, sans-serif;
+  font-weight: 700;
 }
 
 .die-cut-ink {
   position: relative;
+  font-family: "DynaPuff", ui-rounded, system-ui, sans-serif;
+  font-weight: 700;
 }
 
 .wordmark {
-  font-family: var(--font-display);
+  font-family: "DynaPuff", ui-rounded, system-ui, sans-serif;
   font-weight: 700;
+  font-synthesis: none;
   font-size: 42px;
   line-height: 0.8;
   letter-spacing: -0.09em;
@@ -109,7 +161,7 @@
 }
 
 .plate {
-  font-family: var(--font-sans);
+  font-family: "Bricolage Grotesque", system-ui, sans-serif;
   font-weight: 800;
   border: 3px solid #17110b;
   box-shadow: 8px 8px 0 #17110b;
@@ -136,7 +188,7 @@
 }
 
 .stamp {
-  font-family: var(--font-display);
+  font-family: "DynaPuff", ui-rounded, system-ui, sans-serif;
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -144,6 +196,306 @@
   border: 3px dashed #e53d94;
   background: color-mix(in srgb, #fffbed 82%, transparent);
   transform: rotate(-8deg);
+}
+
+.nob-face {
+  display: block;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: transparent;
+  line-height: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.nob-face:focus-visible {
+  outline: 4px solid #2860ff;
+  outline-offset: 4px;
+}
+
+.nob-live {
+  --ink: #17110b;
+  --orange: #ff7c18;
+  --sclera: #f3e7c6;
+  --look-x: 0px;
+  --look-y: 0px;
+}
+
+.nob-live .nob-master-shadow {
+  fill: #090704;
+}
+
+.nob-live .nob-head,
+.nob-live .nob-ear {
+  fill: #ff7c18;
+  stroke: #17110b;
+}
+
+.nob-live .nob-master-head {
+  stroke-width: 3.4;
+}
+
+.nob-live .nob-master-ear {
+  stroke-width: 3.4;
+  stroke-linejoin: round;
+}
+
+.nob-live .nob-master-ear-fold {
+  fill: none;
+  stroke: #17110b;
+  stroke-width: 2.1;
+  stroke-linecap: round;
+}
+
+.nob-live .nob-eye-white {
+  fill: #f3e7c6;
+}
+
+.nob-live .nob-eye-outline {
+  fill: none;
+  stroke: #17110b;
+  stroke-width: 3.2;
+}
+
+.nob-live .nob-pupil {
+  fill: #17110b;
+  transform-box: fill-box;
+  transform-origin: center;
+  transform: translate(var(--look-x), var(--look-y));
+  transition: transform 90ms linear;
+}
+
+.nob-live .nob-lid {
+  fill: #ff7c18;
+}
+
+.nob-live .knob-lid-arc {
+  fill: none;
+  stroke: #17110b;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+
+.nob-live .nob-brow {
+  fill: none;
+  stroke: #17110b;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.nob-live .nob-nose {
+  fill: #e98da3;
+  stroke: #17110b;
+  stroke-width: 3.2;
+}
+
+.nob-live .knob-mouth path {
+  fill: none;
+  stroke: #17110b;
+  stroke-width: 3.2;
+  stroke-linecap: round;
+}
+
+.nob-live .knob-mouth-flat,
+.nob-live .knob-mouth-smile,
+.nob-live .knob-mouth-frown,
+.nob-live .knob-mouth-o,
+.nob-live .knob-eye-shut {
+  display: none;
+}
+
+.nob-live .knob-shut-line,
+.nob-live .knob-shut-lash {
+  fill: none;
+  stroke: #17110b;
+  stroke-linecap: round;
+}
+
+.nob-live .knob-shut-line {
+  stroke-width: 3.5;
+}
+
+.nob-live .knob-shut-lash {
+  stroke-width: 2.6;
+  opacity: 0.72;
+}
+
+.nob-live .nob-anim,
+.nob-live .nob-knob {
+  transform-box: fill-box;
+  transform-origin: center;
+  transition: transform 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.nob-live .knob-interviewing {
+  transform: rotate(-2deg);
+}
+
+.nob-live .knob-interviewing .knob-brow-l {
+  transform: translateY(-8px) rotate(-6deg);
+}
+
+.nob-live .knob-interviewing .knob-brow-r {
+  transform: translateY(4px) rotate(5deg);
+}
+
+.nob-live .knob-interviewing .knob-lid-l {
+  transform: translateY(-4px);
+}
+
+.nob-live .knob-interviewing .knob-mouth-line {
+  display: none;
+}
+
+.nob-live .knob-interviewing .knob-mouth-o {
+  display: inline;
+}
+
+.nob-live .knob-verdict {
+  transform: rotate(-3deg);
+}
+
+.nob-live .knob-verdict .knob-brow-l {
+  transform: translateY(7px) rotate(12deg);
+}
+
+.nob-live .knob-verdict .knob-brow-r {
+  transform: translateY(7px) rotate(-12deg);
+}
+
+.nob-live .knob-verdict .knob-lid-l,
+.nob-live .knob-verdict .knob-lid-r {
+  transform: translateY(8px);
+}
+
+.nob-live .knob-verdict .knob-mouth-line {
+  display: none;
+}
+
+.nob-live .knob-verdict .knob-mouth-flat {
+  display: inline;
+}
+
+.nob-live .knob-wink {
+  transform: rotate(3deg);
+}
+
+.nob-live .knob-wink .knob-eye-r .nob-eye-white,
+.nob-live .knob-wink .knob-eye-r .nob-pupil,
+.nob-live .knob-wink .knob-eye-r .nob-eye-outline,
+.nob-live .knob-wink .knob-eye-r .nob-lid {
+  display: none;
+}
+
+.nob-live .knob-wink .knob-eye-r .knob-eye-shut {
+  display: inline;
+}
+
+.nob-live .knob-wink .knob-lid-l {
+  transform: translateY(-4px);
+}
+
+.nob-live .knob-wink .knob-brow-l {
+  transform: translateY(-8px) rotate(-5deg);
+}
+
+.nob-live .knob-wink .knob-brow-r {
+  transform: translateY(-7px) rotate(6deg);
+}
+
+.nob-live .knob-wink .knob-mouth-line {
+  display: none;
+}
+
+.nob-live .knob-wink .knob-mouth-smile {
+  display: inline;
+}
+
+.nob-live .knob-bored {
+  transform: rotate(1deg);
+}
+
+.nob-live .knob-bored .knob-brow-l,
+.nob-live .knob-bored .knob-brow-r {
+  transform: translateY(9px);
+}
+
+.nob-live .knob-bored .knob-lid-l,
+.nob-live .knob-bored .knob-lid-r {
+  transform: translateY(11px);
+}
+
+.nob-live .knob-bored .knob-mouth-line {
+  display: none;
+}
+
+.nob-live .knob-bored .knob-mouth-o {
+  display: inline;
+}
+
+.nob-live .knob-bored .knob-mouth {
+  transform: translateY(3px);
+}
+
+.nob-live .knob-doubting {
+  transform: rotate(-2deg);
+}
+
+.nob-live .knob-doubting .knob-brow-l {
+  transform: translateY(-9px) rotate(-11deg);
+}
+
+.nob-live .knob-doubting .knob-brow-r {
+  transform: translateY(6px) rotate(-4deg);
+}
+
+.nob-live .knob-doubting .knob-lid-l {
+  transform: translateY(4px);
+}
+
+.nob-live .knob-doubting .knob-lid-r {
+  transform: translateY(9px);
+}
+
+.nob-live .knob-doubting .knob-mouth-line {
+  display: none;
+}
+
+.nob-live .knob-doubting .knob-mouth-frown {
+  display: inline;
+}
+
+.nob-live .knob-pleased {
+  transform: rotate(1.5deg);
+}
+
+.nob-live .knob-pleased .nob-eye-white,
+.nob-live .knob-pleased .nob-pupil,
+.nob-live .knob-pleased .nob-eye-outline,
+.nob-live .knob-pleased .nob-lid {
+  display: none;
+}
+
+.nob-live .knob-pleased .knob-eye-shut {
+  display: inline;
+}
+
+.nob-live .knob-pleased .knob-brow-l {
+  transform: translateY(-11px) rotate(-5deg);
+}
+
+.nob-live .knob-pleased .knob-brow-r {
+  transform: translateY(-11px) rotate(5deg);
+}
+
+.nob-live .knob-pleased .knob-mouth-line {
+  display: none;
+}
+
+.nob-live .knob-pleased .knob-mouth-smile {
+  display: inline;
 }
 
 @media (max-width: 640px) {
@@ -155,7 +507,10 @@
 @media (prefers-reduced-motion: reduce) {
   .plate,
   .stamp,
-  .die-cut {
+  .die-cut,
+  .nob-live .nob-anim,
+  .nob-live .nob-knob,
+  .nob-live .nob-pupil {
     transition: none;
     animation: none;
   }
